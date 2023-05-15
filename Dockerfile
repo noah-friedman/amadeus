@@ -7,6 +7,8 @@ RUN mkdir /amadeus
 WORKDIR /amadeus
 COPY CMakeLists.txt .
 COPY main.c .
+COPY src src
+COPY include include
 
 # By default, build the project
-CMD ["/bin/sh", "-c", "cmake -S . -B cmake-build && cmake --build cmake-build"]
+CMD ["/bin/sh", "-c", "cmake -S . -B cmake-build && cmake --build cmake-build && cmake --install cmake-build"]
