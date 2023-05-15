@@ -1,0 +1,98 @@
+name: CI/CD
+on:
+  push:
+    paths-ignore:
+      - .gitignore
+      - LICENSE
+      - README.md
+
+env:
+  PLATFORMS: linux/amd64,linux/arm64,linux/386,linux/arm/v7
+
+jobs: 
+  build:
+    name: Build multi-arch Docker image and cache it
+    runs-on: ubuntu-latest
+    outputs:
+      tags: ${{ steps.tags.outputs.tags }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Retrieve Docker build cache
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: /tmp/.buildx-cache
+          key: buildx-cache-${{ hashFiles('Dockerfile') }}
+          restore-keys: buildx-cache-
+      - name: Generate image tags
+        id: tags
+        uses: docker/metadata-action@v3
+        with:
+          images: ghcr.io/noah-friedman/amadeus
+          flavor: latest=true
+          tags: type=sha
+      - name: Create Docker Buildx builder
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: docker buildx create --use --driver=docker-container
+      - name: Build and cache multi-platform image
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          tags: ${{ steps.tags.outputs.tags }}
+          platforms: ${{ env.PLATFORMS }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max,compression=gzip,compression-level=9
+
+  verify:
+    name: Verify project builds in Docker image environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Retrieve Docker build cache
+        uses: actions/cache/restore@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: buildx-cache-${{ hashFiles('Dockerfile') }}
+          restore-keys: buildx-cache-
+      - name: Build Docker image from cache
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          load: true
+          cache-from: type=local,src=/tmp/.buildx-cache
+          tags: ghcr.io/noah-friedman/amadeus
+      - name: Verify that the project builds successfully
+        run: docker run --rm ghcr.io/noah-friedman/amadeus
+
+  push:
+    name: Push Docker image from cache to GitHub Container Registry
+    runs-on: ubuntu-latest
+    needs: [build, verify]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Retrieve Docker build cache
+        uses: actions/cache/restore@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: buildx-cache-${{ hashFiles('Dockerfile') }}
+          restore-keys: buildx-cache-
+      - name: Create Docker Buildx builder
+        run: docker buildx create --use --driver=docker-container
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push multi-platform image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ needs.build.outputs.tags }}
+          platforms: ${{ env.PLATFORMS }}
+          cache-from: type=local,src=/tmp/.buildx-cache
