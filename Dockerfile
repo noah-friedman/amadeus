@@ -6,7 +6,7 @@ RUN apk add --no-cache cmake make gcc g++
 RUN mkdir /amadeus
 WORKDIR /amadeus
 COPY CMakeLists.txt .
-COPY main.c .
+COPY main.cpp .
 
 # By default, build the project
-CMD ["/bin/sh", "-c", "cmake -S . -B build && cmake --build build"]
+CMD ["/bin/sh", "-c", "cmake -S . -B cmake-build && cmake --build cmake-build"]
