@@ -1,4 +1,4 @@
-# The A.M.a.D.E.U.S. (*A*ppropriately *M*enial *a*nd *D*eployable *E*asily *U*nderstandable *S*ample) Project
+# The A.M.a.D.E.U.S. (*A*ppropriately *M*enial *a*nd *D*eployable *E*asily *U*nderstandable *S*ample) Project [![CI/CD](https://github.com/noah-friedman/amadeus/actions/workflows/CICD.yml/badge.svg)](https://github.com/noah-friedman/amadeus/actions/workflows/CICD.yml)
 
 Often times I find myself in need of a simple example project to use to test some other external system.
 I'm bored of re-writing that project, so I'm just going to put it in a GH repo now.
