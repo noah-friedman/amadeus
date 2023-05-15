@@ -27,7 +27,7 @@ jobs:
           restore-keys: buildx-cache-
       - name: Generate image tags
         id: tags
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v4
         with:
           images: ghcr.io/noah-friedman/amadeus
           flavor: latest=true
