@@ -7,7 +7,7 @@ include_directories(include)
 
 # Create object libraries
 function(object_from_source_header name)
-	add_library(${name} OBJECT src/${name}.cpp)
+	add_library(${name} OBJECT src/${name}.c)
 	list(APPEND OBJECT_LIBRARIES $<TARGET_OBJECTS:${name}>)
 endfunction()
 set(SOURCE_HEADERS "")
@@ -16,7 +16,7 @@ foreach(source_header ${SOURCE_HEADERS})
 endforeach()
 
 # Create main executable
-add_executable(main main.cpp)
+add_executable(main main.c)
 target_link_libraries(main ${OBJECT_LIBRARIES})
 
 install(TARGETS main DESTINATION bin)
