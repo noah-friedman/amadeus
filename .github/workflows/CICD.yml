@@ -29,7 +29,7 @@ jobs:
         id: tags
         uses: docker/metadata-action@v4
         with:
-          images: ghcr.io/noah-friedman/amadeus
+          images: ghcr.io/speelbarrow/amadeus
           tags: |
             type=sha,enable=${{ !startsWith(github.ref, 'refs/tags/') }}
             type=edge,enable=${{ !startsWith(github.ref, 'refs/tags/') }}
@@ -65,9 +65,9 @@ jobs:
           context: .
           load: true
           cache-from: type=local,src=/tmp/.buildx-cache
-          tags: ghcr.io/noah-friedman/amadeus
+          tags: ghcr.io/speelbarrow/amadeus
       - name: Verify that the project builds successfully
-        run: docker run --rm ghcr.io/noah-friedman/amadeus
+        run: docker run --rm ghcr.io/speelbarrow/amadeus
 
   push:
     name: Push Docker image from cache to GitHub Container Registry
