@@ -6,14 +6,15 @@
 #include <math.h>
 #include <string.h>
 
-int prompt_counted(const char *message, int min, int max, int count) {
+int prompt_counted(const char *message, double min, double max, int count) {
     char range[25];
+    
     if (min != -INFINITY && max != INFINITY) {
-        sprintf(range, "(%d-%d) ", min, max);
+        sprintf(range, " (%d-%d)", (int)min, (int)max);
     } else if (min != -INFINITY) {
-        sprintf(range, "(>%d) ", min);
+        sprintf(range, " (>%d)", (int)min);
     } else if (max != INFINITY) {
-        sprintf(range, "(<%d) ", max);
+        sprintf(range, " (<%d)", (int)max);
     } else {
         range[0] = '\0';
     }
@@ -35,9 +36,8 @@ int prompt_counted(const char *message, int min, int max, int count) {
         exit(1);
     }
 }
-int prompt_counted(const char *message, int min, int max, int count);
 
-int prompt(const char *message) { return prompt_range(message, -INFINITY, INFINITY); }
-int prompt_min(const char *message, int min) { return prompt_range(message, min, INFINITY); }
-int prompt_max(const char *message, int max) { return prompt_range(message, -INFINITY, max); }
-int prompt_range(const char *message, int min, int max) { return prompt_counted(message, min, max, 0); }
+int prompt(const char *message) { return prompt_counted(message, -INFINITY, INFINITY, 0); }
+int prompt_min(const char *message, int min) { return prompt_counted(message, (double)min, INFINITY, 0); }
+int prompt_max(const char *message, int max) { return prompt_counted(message, -INFINITY, (double)max, 0); }
+int prompt_range(const char *message, int min, int max) { return prompt_counted(message, (double)min, (double)max, 0); }

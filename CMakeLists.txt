@@ -5,19 +5,20 @@ set(CMAKE_C_STANDARD 17)
 # Set global include directory
 include_directories(include)
 
-# Create object libraries
+# For creating object libraries
 function(object_from_source_header name)
 	add_library(${name} OBJECT src/${name}.c)
-	list(APPEND OBJECT_LIBRARIES $<TARGET_OBJECTS:${name}>)
 endfunction()
 set(SOURCE_HEADERS prompt)
-foreach(source_header ${SOURCE_HEADERS})
-	object_from_source_header(${source_header})
-endforeach()
 
 # Create main executable
 add_executable(main main.c)
-target_link_libraries(main ${OBJECT_LIBRARIES})
+
+# Generate and link object libraries
+foreach(source_header ${SOURCE_HEADERS})
+	object_from_source_header(${source_header})
+    target_link_libraries(main $<TARGET_OBJECTS:${source_header}>)
+endforeach()
 
 install(TARGETS main DESTINATION bin)
 install(DIRECTORY include/amadeus TYPE INCLUDE)
