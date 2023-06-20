@@ -3,14 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int prompt_counted(const char **message, int count);
+int prompt_counted(const char *message, int count);
 
-int prompt(const char **message) {
+int prompt(const char *message) {
     return prompt_counted(message, 0);
 }
 
-int prompt_counted(const char **message, int count) {
-    printf("%s: ", *message);
+int prompt_counted(const char *message, int count) {
+    printf("%s: ", message);
 
     char *buffer = NULL;
     size_t buffer_size = 0;
