@@ -1,4 +1,4 @@
-#include <AMaDEUS/prompt.h>
+#include <amadeus/prompt.h>
 
 #include <stdio.h>
 #include <stdlib.h>
