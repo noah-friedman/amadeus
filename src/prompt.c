@@ -25,7 +25,7 @@ int prompt_counted(const char *message, int min, int max, int count) {
     getline(&buffer, &buffer_size, stdin);
 
     int result = atoi(buffer);
-    if (result != 0) {
+    if (result != 0 && result >= min && result <= max) {
         return result;
     } else if (++count < 3) {
         printf("Invalid input. Please try again.\n");
