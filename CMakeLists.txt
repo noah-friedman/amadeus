@@ -20,4 +20,4 @@ add_executable(main main.c)
 target_link_libraries(main ${OBJECT_LIBRARIES})
 
 install(TARGETS main DESTINATION bin)
-install(DIRECTORY include/AMaDEUS TYPE INCLUDE)
+install(DIRECTORY include/amadeus TYPE INCLUDE)
