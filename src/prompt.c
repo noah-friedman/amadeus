@@ -2,14 +2,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
-int prompt_counted(const char *message, int count);
-
-int prompt(const char *message) {
-    return prompt_counted(message, 0);
-}
-
-int prompt_counted(const char *message, int count) {
+int prompt_counted(const char *message, int min, int max, int count) {
     printf("%s: ", message);
 
     char *buffer = NULL;
@@ -21,9 +16,15 @@ int prompt_counted(const char *message, int count) {
         return result;
     } else if (++count < 3) {
         printf("Invalid input. Please try again.\n");
-        return prompt_counted(message, count);
+        return prompt_counted(message, min, max, count);
     } else {
         printf("Too many invalid inputs. Exiting.\n");
         exit(1);
     }
 }
+int prompt_counted(const char *message, int min, int max, int count);
+
+int prompt(const char *message) { return prompt_range(message, -INFINITY, INFINITY); }
+int prompt_min(const char *message, int min) { return prompt_range(message, min, INFINITY); }
+int prompt_max(const char *message, int max) { return prompt_range(message, -INFINITY, max); }
+int prompt_range(const char *message, int min, int max) { return prompt_counted(message, min, max, 0); }
