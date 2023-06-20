@@ -1,11 +1,24 @@
 #include <amadeus/prompt.h>
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 int prompt_counted(const char *message, int min, int max, int count) {
-    printf("%s: ", message);
+    char range[25];
+    if (min != -INFINITY && max != INFINITY) {
+        sprintf(range, "(%d-%d) ", min, max);
+    } else if (min != -INFINITY) {
+        sprintf(range, "(>%d) ", min);
+    } else if (max != INFINITY) {
+        sprintf(range, "(<%d) ", max);
+    } else {
+        range[0] = '\0';
+    }
+
+    printf("%s%s: ", message, range);
 
     char *buffer = NULL;
     size_t buffer_size = 0;
